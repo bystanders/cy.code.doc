@@ -1,0 +1,26 @@
+add into windows system path with "C:\Program Files (x86)\Git\bin;C:\Program Files (x86)\Git\libexec\git-core;"
+this step maybe need to redo after git updated
+
+add into Copssh path ...ICW\etc\profile ":/cygdrive/c/Program Files (x86)/Git/bin:/cygdrive/c/Program Files (x86)/Git/libexec/git-core"
+like this:
+export PATH="/bin:$syspath:$winpath:/cygdrive/c/Program Files (x86)/Git/bin:/cygdrive/c/Program Files (x86)/Git/libexec/git-core"
+need restart Openssh service
+
+copy git.key.pub into ...ICW/home/mike
+
+run "ssh mike@mike-pc" in git bash
+run "git" to confirm git could be access by remote
+run "cat git.key.pub >> .ssh/authorized_keys" to append new public key
+
+open ssh port 22 in windows firewall
+
+until now windows ssh server is ok
+
+copy private key file git.key into linux /home/[user_path]/.ssh/
+
+mv ~/.ssh/git.key ~/.ssh/id_rsa
+
+until now linux ssh client is ok
+
+git URL sample:
+ssh://username@IP/driverdir.../cy.repository/cy.code.library/cy.test.git
