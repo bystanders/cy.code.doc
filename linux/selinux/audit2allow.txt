@@ -1,0 +1,71 @@
+Command:
+su root
+
+grep httpd /var/log/audit/audit.log | audit2allow -m clouddb > clouddb.te
+
+cat ./clouddb.te
+
+grep httpd /var/log/audit/audit.log | audit2allow -M clouddb
+
+semodule -i clouddb.pp
+
+About:
+[root@centos32bitv6 audit]# cat clouddb.te
+
+module clouddb 1.0;
+
+require {
+        type unconfined_t;
+        type user_home_dir_t;
+        type httpd_user_content_t;
+        type httpd_t;
+        type user_home_t;
+        type port_t;
+        class process { execstack execmem };
+        class unix_stream_socket connectto;
+        class tcp_socket name_connect;
+        class file { read execute open };
+        class sock_file write;
+        class sem { unix_read unix_write };
+        class lnk_file read;
+        class dir search;
+}
+
+#============= httpd_t ==============
+#!!!! This avc can be allowed using the boolean 'httpd_builtin_scripting'
+
+allow httpd_t httpd_user_content_t:file read;
+#!!!! This avc can be allowed using one of the these booleans:
+#     allow_ypbind, httpd_can_network_connect
+
+allow httpd_t port_t:tcp_socket name_connect;
+#!!!! This avc can be allowed using the boolean 'httpd_execmem'
+
+allow httpd_t self:process { execstack execmem };
+allow httpd_t unconfined_t:sem { unix_read unix_write };
+allow httpd_t unconfined_t:unix_stream_socket connectto;
+#!!!! This avc can be allowed using the boolean 'httpd_enable_homedirs'
+
+allow httpd_t user_home_dir_t:dir search;
+#!!!! This avc can be allowed using the boolean 'httpd_enable_homedirs'
+
+allow httpd_t user_home_t:dir search;
+allow httpd_t user_home_t:file execute;
+#!!!! This avc can be allowed using the boolean 'httpd_enable_homedirs'
+
+allow httpd_t user_home_t:file { read open };
+#!!!! This avc can be allowed using the boolean 'httpd_enable_homedirs'
+
+allow httpd_t user_home_t:lnk_file read;
+allow httpd_t user_home_t:sock_file write;
+
+So can't using the following command(missing last 2 rules):
+setsebool httpd_builtin_scripting on
+
+setsebool httpd_can_network_connect on
+
+setsebool httpd_execmem on
+
+setsebool httpd_enable_homedirs on
+
+...

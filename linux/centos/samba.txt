@@ -1,0 +1,57 @@
+0.First installed samba, in centos installation choose servers->CIFS Server!
+PS: SMB(Server Message Block) = CIFS(Common Internet File System).
+
+1.Go to samba config path. And su root.
+$ cd /etc/samba
+$ ls
+$ su
+
+2.Backup smb.conf file.
+# cp -p [/etc/samba/]smb.conf [/etc/samba/]smb.conf.bak
+
+3.Edit smb.conf file.
+# emacs smb.conf
+
+4.Change 'workgroup = MYGROUP' into 'workgroup = WORKGROUP'.
+add 'hosts allow = 127. 192.168.XXX.' below ';hosts allow...'.
+Don't change 'security = user' into 'security = share'!
+add 'smb passwd file = /etc/samba/smbpasswd' below 'passdb backend...'.
+
+5.Move to end of the file, remove comments(5 line ';') for '[public]'.
+Like this:
+...
+[public]
+comment = Public Stuff
+path = /home/samba
+public = yes
+writable = yes
+...
+Save changes(ctrl+x, ctrl+s)! 
+
+6.Make missing dir in another terminal(su root). Give it all access authority.
+$ ls /home
+$ su
+# mkdir /home/samba
+# chmod 777 /home/samba
+
+7.create encrypted smbpasswd file.
+# cat /etc/passwd | mksmbpasswd.sh > /etc/samba/smbpasswd
+
+8.add user XXX with password into smbpasswd file.
+# smbpasswd -a XXX
+New SMB password:
+Retype new SMB password:
+Added user XXX.
+
+9.Open access authority for selinux in another terminal as smb.conf described!
+#setsebool -P samba_export_all_rw on
+
+10.Exit emacs(ctrl+x, ctrl+c).Start smb service in terminal.
+# /etc/init.d/smb start[/stop/restart]
+
+11.Open Samba authority in Firewall configuration. Choose and apply.
+
+12.Enable smb service in Service configuration.
+(To avoid start again after restart linux.)
+
+13.You could visit(read/write into) '\\IP\public' folder in linux from windows.
