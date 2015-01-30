@@ -20,6 +20,8 @@ copy private key file git.key into linux /home/[user_path]/.ssh/
 
 mv ~/.ssh/git.key ~/.ssh/id_rsa
 
+chmod 600 ~/.ssh/id_rsa
+
 until now linux ssh client is ok
 
 git URL sample:
