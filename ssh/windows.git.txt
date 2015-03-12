@@ -16,21 +16,33 @@ open ssh port 22 in windows firewall
 
 until now windows ssh server is ok
 
+env preparation and git client test sample:
+mkdir ~/dev.tool
+mkdir ~/cy.code.public
+mkdir ~/cy.code.library
+
+cd ~/cy.code.library
+git clone ssh://username@IP/driverdir.../cy.repository/cy.code.library/cy.test.git
+    with error
 copy private key file git.key into linux /home/[user_path]/.ssh/
 
 mv ~/.ssh/git.key ~/.ssh/id_rsa
 
 chmod 600 ~/.ssh/id_rsa
 
+redo git clone ... without error
 until now linux ssh client is ok
 
-git client test/config/clone sample:
-git clone ssh://username@IP/driverdir.../cy.repository/cy.code.library/cy.test.git
-
+config/clone git client sample:
 git config --global user.name ""
+
 git config --global user.email ""
+
 git config --list
+cd ~/cy.code.public
 
 git clone git@github.com:bystanders/cy.code.doc.git
+
 git clone git@github.com:bystanders/cy.shell.git
+
 git clone git@github.com:bystanders/cy.book.code.git
